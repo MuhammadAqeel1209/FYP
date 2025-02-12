@@ -14,7 +14,6 @@ export default function Login() {
     setError(null);
 
     try {
-      // Replace with actual login logic
       router.push('/Charts');
     } catch (error) {
       setError(
