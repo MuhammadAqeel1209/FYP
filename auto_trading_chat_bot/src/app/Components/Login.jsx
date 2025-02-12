@@ -1,6 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast, ToastContainer } from 'react-toastify'; // Import toastify
+import 'react-toastify/dist/ReactToastify.css'; // Import toastify CSS
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -13,12 +15,35 @@ export default function Login() {
     e.preventDefault();
     setError(null);
 
+    // Validation (optional)
+    if (!email || !password) {
+      setError("Email and password are required.");
+      toast.error("Email and password are required."); // Show error toast
+      return;
+    }
+
     try {
+      // Send login request to your backend API
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle server errors or bad credentials
+        throw new Error(data.message || "Invalid email or password.");
+      }
+
+      toast.success("Login successful!"); // Show success toast
       router.push('/Charts');
     } catch (error) {
-      setError(
-        error.message || 'An error occurred while logging in. Please try again.'
-      );
+      setError(error.message || "An error occurred while logging in. Please try again.");
+      toast.error(error.message || "An error occurred while logging in. Please try again."); // Show error toast
     }
   };
 
@@ -92,6 +117,9 @@ export default function Login() {
           </div>
         </div>
       </div>
+
+      {/* ToastContainer to display the toasts */}
+      <ToastContainer/>
     </div>
   );
 }

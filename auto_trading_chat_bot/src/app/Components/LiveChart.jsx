@@ -45,14 +45,16 @@ export default function LiveCandlestick() {
       },
     });
 
-    chartRef.current = chart;
+    chartRef.current = chart; // Store the chart reference here
 
     const loadSeries = async () => {
+      if (!chartRef.current) return; // Ensure the chart is initialized
+
       const intervalMap = { "1D": "1h", "1M": "1d", "3M": "1w", "1Y": "1w" };
       const data = await fetchHistoricalData(intervalMap[timeframe], selectedCrypto);
 
       if (chartType === "candlestick") {
-        seriesRef.current = chart.addCandlestickSeries({
+        seriesRef.current = chartRef.current.addCandlestickSeries({
           upColor: "#10b981",
           downColor: "#ef4444",
           borderVisible: false,
@@ -61,7 +63,7 @@ export default function LiveCandlestick() {
         });
         seriesRef.current.setData(data);
       } else {
-        seriesRef.current = chart.addAreaSeries({
+        seriesRef.current = chartRef.current.addAreaSeries({
           topColor: "rgba(33, 150, 243, 0.3)",
           bottomColor: "rgba(33, 150, 243, 0.1)",
           lineColor: "rgba(33, 150, 243, 1)",
@@ -88,11 +90,13 @@ export default function LiveCandlestick() {
         close: parseFloat(kline.c),
       };
 
-      seriesRef.current.update(
-        chartType === "candlestick"
-          ? candlestick
-          : { time: candlestick.time, value: candlestick.close }
-      );
+      if (seriesRef.current) {
+        seriesRef.current.update(
+          chartType === "candlestick"
+            ? candlestick
+            : { time: candlestick.time, value: candlestick.close }
+        );
+      }
     };
 
     return () => {
