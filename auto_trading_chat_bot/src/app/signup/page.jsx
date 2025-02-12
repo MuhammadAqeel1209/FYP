@@ -21,7 +21,7 @@ export default function Signup() {
 
     try {
       // Replace with actual signup logic
-      router.push("/Charts"); 
+      router.push("/"); 
     } catch (error) {
       setError(error.message || "An error occurred during sign up. Please try again.");
     }
