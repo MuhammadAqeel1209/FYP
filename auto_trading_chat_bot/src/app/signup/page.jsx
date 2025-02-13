@@ -160,7 +160,7 @@ export default function Signup() {
       </div>
 
       {/* ToastContainer to display the toasts */}
-      <ToastContainer position="top-right" autoClose={5000} hideProgressBar />
+      <ToastContainer position="top-right" />
     </div>
   );
 }
